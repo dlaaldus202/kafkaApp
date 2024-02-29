@@ -56,30 +56,30 @@ kafka-topics.sh --bootstrap-server localhost:9092 --topic demo_java --create --p
 
 ## Producer 소스코드 작성
 ```java
-		//어디서 client.id = producer-3 어디서 설정하는건지 by 미연
-		log.info("welcome KafkaPorducerApplication!!");
+//어디서 client.id = producer-3 어디서 설정하는건지 by 미연
+log.info("welcome KafkaPorducerApplication!!");
 
-		String bootstrapServers = "127.0.0.1:9092";
+String bootstrapServers = "127.0.0.1:9092";
 
-    // create Producer properties 설정
-    Properties properties = new Properties();
-    properties.setProperty(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
-    properties.setProperty(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
-    properties.setProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
+// create Producer properties 설정
+Properties properties = new Properties();
+properties.setProperty(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+properties.setProperty(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
+properties.setProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
 
-    // create the producer
-    KafkaProducer<String, String> producer = new KafkaProducer<>(properties);
+// create the producer
+KafkaProducer<String, String> producer = new KafkaProducer<>(properties);
 
-    //key는 선택
-		String key = "I'm key!!";
-    ProducerRecord<String, String> producerRecord = new ProducerRecord<>("demo_java", key, "hello world");
+//key는 선택
+	String key = "I'm key!!";
+ProducerRecord<String, String> producerRecord = new ProducerRecord<>("demo_java", key, "hello world");
 
-    // send data - asynchronous
-    producer.send(producerRecord);
-    // flush data - synchronous
-    producer.flush();
-    // flush and close producer
-    producer.close();
+// send data - asynchronous
+producer.send(producerRecord);
+// flush data - synchronous
+producer.flush();
+// flush and close producer
+producer.close();
 
 ```
 <br/><br/>
@@ -88,55 +88,55 @@ kafka-topics.sh --bootstrap-server localhost:9092 --topic demo_java --create --p
 
 ## Consumer 소스코드 작성
 ```java
-  		SpringApplication.run(KafkaConsumerApplication.class, args);
-        log.info("I am a Kafka Consumer");
+SpringApplication.run(KafkaConsumerApplication.class, args);
+log.info("I am a Kafka Consumer");
 
-        String bootstrapServers = "127.0.0.1:9092";
-        String groupId = "my-fifth-application";
-        String topic = "demo_java";
+String bootstrapServers = "127.0.0.1:9092";
+String groupId = "my-fifth-application";
+String topic = "demo_java";
 
-        // create consumer configs
-		    // AUTO_OFFSET_RESET_CONFIG Option :  earliest, latest, none
-        Properties properties = new Properties();
-        properties.setProperty(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
-        properties.setProperty(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
-        properties.setProperty(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
-        properties.setProperty(ConsumerConfig.GROUP_ID_CONFIG, groupId);
-        properties.setProperty(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+// create consumer configs
+// AUTO_OFFSET_RESET_CONFIG Option :  earliest, latest, none
+Properties properties = new Properties();
+properties.setProperty(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+properties.setProperty(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
+properties.setProperty(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
+properties.setProperty(ConsumerConfig.GROUP_ID_CONFIG, groupId);
+properties.setProperty(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
 
-        // create consumer
-        KafkaConsumer<String, String> consumer = new KafkaConsumer<>(properties);
+// create consumer
+KafkaConsumer<String, String> consumer = new KafkaConsumer<>(properties);
 
-        // get a reference to the current thread
-        final Thread mainThread = Thread.currentThread();
-      
-       try {
-      
-                  // subscribe consumer to our topic(s)
-                  consumer.subscribe(Arrays.asList(topic));
-      
-                  // poll for new data
-                  while (true) {
-                      ConsumerRecords<String, String> records =
-                              consumer.poll(Duration.ofMillis(100));
-      
-                      for (ConsumerRecord<String, String> record : records) {
-                          log.info("Key: " + record.key() + ", Value: " + record.value());
-                          log.info("Partition: " + record.partition() + ", Offset:" + record.offset());
-                      }
-                  }
-      
-              } catch (WakeupException e) {
-                  log.info("Wake up exception!");
-                  // we ignore this as this is an expected exception when closing a consumer
-              } catch (Exception e) {
-                  log.error("Unexpected exception", e);
-              } finally {
-                  consumer.close(); // this will also commit the offsets if need be.
-                  log.info("The consumer is now gracefully closed.");
-              }
-      
-      	}
+// get a reference to the current thread
+final Thread mainThread = Thread.currentThread();
+
+try {
+
+	  // subscribe consumer to our topic(s)
+	  consumer.subscribe(Arrays.asList(topic));
+
+	  // poll for new data
+	  while (true) {
+	      ConsumerRecords<String, String> records =
+		      consumer.poll(Duration.ofMillis(100));
+
+	      for (ConsumerRecord<String, String> record : records) {
+		  log.info("Key: " + record.key() + ", Value: " + record.value());
+		  log.info("Partition: " + record.partition() + ", Offset:" + record.offset());
+	      }
+	  }
+
+      } catch (WakeupException e) {
+	  log.info("Wake up exception!");
+	  // we ignore this as this is an expected exception when closing a consumer
+      } catch (Exception e) {
+	  log.error("Unexpected exception", e);
+      } finally {
+	  consumer.close(); // this will also commit the offsets if need be.
+	  log.info("The consumer is now gracefully closed.");
+      }
+
+}
 
 
 ```
