@@ -11,8 +11,6 @@ brew install kafka
 
 ```
 <br/><br/>
-<br/><br/>
-
 
 ## kafka실행
 ```bash
@@ -27,8 +25,6 @@ brew install kafka
 /opt/homebrew/Cellar/kafka/3.6.1/libexec/bin/kafka-server-start.sh /opt/homebrew/Cellar/kafka/3.6.1/.bottle/etc/kafka/kraft/server.properties
 ```
 <br/><br/>
-<br/><br/>
-
 
 ## 파티션 할당 및 콘솔 실행
 ```bash
@@ -51,8 +47,6 @@ kafka-topics.sh --bootstrap-server localhost:9092 --topic demo_java --create --p
 4. pom.xml dependency 확인 
 ```
 <br/><br/>
-<br/><br/>
-
 
 ## Producer 소스코드 작성
 ```java
@@ -82,7 +76,6 @@ producer.flush();
 producer.close();
 
 ```
-<br/><br/>
 <br/><br/>
 
 
@@ -141,8 +134,6 @@ try {
 
 ```
 <br/><br/>
-<br/><br/>
-
 
 
 ## 레퍼런스
